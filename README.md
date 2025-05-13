@@ -2,7 +2,7 @@
 
 A comprehensive, multilingual timezone picker component for Svelte 5 applications with a clean, accessible interface.
 
-![Svelte Timezone Picker.](https://github.com/imclean/svelte-timezone-picker/blob/main/timezone-picker.png)
+![Svelte Timezone Picker.](https://github.com/imclean/svelte-multilingual-timezone-picker/blob/main/timezone-picker.png)
 
 ## Features
 
@@ -28,7 +28,7 @@ npm install svelte-multilingual-timezone-picker
 
 ```svelte
 <script>
-	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-timezone-picker';
+	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
 
 	// Get the user's language or set a default
@@ -55,8 +55,8 @@ npm install svelte-multilingual-timezone-picker
 		TimezonePicker,
 		getTimezoneDataForLocale,
 		getTimezoneValueForCity
-	} from 'svelte-timezone-picker';
-	import { type TimeZoneChangeEvent } from 'svelte-timezone-picker';
+	} from 'svelte-multilingual-timezone-picker';
+	import { type TimeZoneChangeEvent } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
 
 	let userLocale = $state('es');
@@ -104,7 +104,7 @@ npm install svelte-multilingual-timezone-picker
 
 ```svelte
 <script>
-	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-timezone-picker';
+	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
 
 	let formData = $state({
@@ -341,7 +341,7 @@ Example of switching languages:
 
 ```svelte
 <script>
-	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-timezone-picker';
+	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
 
 	let selectedTimezone = $state('');
