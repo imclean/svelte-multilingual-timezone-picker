@@ -1,3 +1,4 @@
+````markdown
 # Svelte Timezone Picker
 
 A comprehensive, multilingual timezone picker component for Svelte 5 applications with a clean, accessible interface.
@@ -10,7 +11,7 @@ A comprehensive, multilingual timezone picker component for Svelte 5 application
 - 🔍 **Search Functionality**: Quick timezone search by name or city
 - 🌍 **Region-based Selection**: Intuitive hierarchical timezone navigation
 - 📱 **Fully Responsive**: Works across all device sizes
-- 🎨 **Tailwind CSS Styling Support**: Modern, customizable design with granular class control
+- 🎨 **Tailwind and Custom CSS Styling Support**: Modern, customizable design with granular class control
 - 🧩 **Svelte 5 Runes**: Built with the latest Svelte 5 reactivity model
 - 🔄 **Two-way Binding**: Easy integration with your existing forms
 - ♿ **Accessibility**: Keyboard navigation and screen reader friendly
@@ -23,25 +24,7 @@ A comprehensive, multilingual timezone picker component for Svelte 5 application
 ```bash
 npm install svelte-timezone-picker
 ```
-
-## Requirements
-
-This component requires Tailwind CSS. Make sure to include the component's path in your Tailwind configuration:
-
-```js
-// tailwind.config.js
-/** @type {import('tailwindcss').Config} */
-export default {
-	content: [
-		'./src/**/*.{html,js,svelte,ts}',
-		'./node_modules/svelte-timezone-picker/**/*.{js,svelte}' // Add this line
-	],
-	theme: {
-		extend: {}
-	},
-	plugins: []
-};
-```
+````
 
 ## Basic Usage
 
@@ -50,32 +33,45 @@ export default {
 	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-timezone-picker';
 	import timezoneData from './timezoneData';
 
-	// Get timezone data for the user's locale
-	let timezoneDataForLocale = $derived.by(() => {
-		return getTimezoneDataForLocale('en', 'en', timezoneData);
+	// Get the user's language or set a default
+	let userLocale = $state('en');
+
+	// Process timezone data for display
+	let processedTimezoneData = $derived.by(() => {
+		return getTimezoneDataForLocale(userLocale, userLocale, timezoneData);
 	});
 
 	let selectedTimezone = $state('');
 </script>
 
-<TimezonePicker bind:value={selectedTimezone} timezoneData={timezoneDataForLocale} />
+<TimezonePicker bind:value={selectedTimezone} timezoneData={processedTimezoneData} {userLocale} />
 
 <p>Selected timezone: {selectedTimezone}</p>
 ```
 
-## Advanced Usage
+## Advanced Usage with Timezone Value Display
 
 ```svelte
 <script>
-	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-timezone-picker';
+	import {
+		TimezonePicker,
+		getTimezoneDataForLocale,
+		getTimezoneValueForCity
+	} from 'svelte-timezone-picker';
+	import { type TimeZoneChangeEvent } from 'svelte-timezone-picker';
 	import timezoneData from './timezoneData';
 
 	let userLocale = $state('es');
 	let selectedTimezone = $state('America/New_York');
 
-	// Get timezone data for the user's locale
-	let timezoneDataForLocale = $derived.by(() => {
+	// Process timezone data for the selected locale
+	let processedTimezoneData = $derived.by(() => {
 		return getTimezoneDataForLocale(userLocale, userLocale, timezoneData);
+	});
+
+	// Get formatted timezone value
+	let timezoneValue = $derived.by(() => {
+		return getTimezoneValueForCity(userLocale, selectedTimezone, 'en', timezoneData);
 	});
 
 	function handleChange(event) {
@@ -85,7 +81,7 @@ export default {
 
 <TimezonePicker
 	bind:value={selectedTimezone}
-	timezoneData={timezoneDataForLocale}
+	timezoneData={processedTimezoneData}
 	{userLocale}
 	className="max-w-md"
 	selectRegionPlaceholder="Seleccionar región"
@@ -98,6 +94,12 @@ export default {
 	required={true}
 	searchable={true}
 />
+
+{#if timezoneValue}
+	<div class="mt-4 p-3 bg-gray-100 rounded">
+		<p>Timezone value: {timezoneValue}</p>
+	</div>
+{/if}
 ```
 
 ## With SvelteKit Form
@@ -113,9 +115,11 @@ export default {
 		timezone: ''
 	});
 
-	// Get timezone data for the user's locale
-	let timezoneDataForLocale = $derived.by(() => {
-		return getTimezoneDataForLocale('en', 'en', timezoneData);
+	let userLocale = $state('en');
+
+	// Process timezone data for the form
+	let processedTimezoneData = $derived.by(() => {
+		return getTimezoneDataForLocale(userLocale, userLocale, timezoneData);
 	});
 </script>
 
@@ -146,7 +150,8 @@ export default {
 			<label for="timezone" class="block text-sm font-medium">Timezone</label>
 			<TimezonePicker
 				bind:value={formData.timezone}
-				timezoneData={timezoneDataForLocale}
+				timezoneData={processedTimezoneData}
+				{userLocale}
 				required={true}
 			/>
 			<input type="hidden" name="timezone" value={formData.timezone} />
@@ -164,26 +169,53 @@ export default {
 
 ## API Reference
 
-### Props
+### Utility Functions
+
+#### getTimezoneDataForLocale
+
+```typescript
+function getTimezoneDataForLocale(
+	displayLocale: string, // The locale to display timezone names in
+	fallbackLocale: string, // Fallback locale if display locale isn't available
+	timezoneData: any // The raw timezone data
+): object;
+```
+
+This function processes the raw timezone data for a specific locale. It returns a structured object that can be directly used by the TimezonePicker component.
+
+#### getTimezoneValueForCity
+
+```typescript
+function getTimezoneValueForCity(
+	locale: string, // The locale to use for timezone display
+	timezone: string, // The timezone identifier (e.g., 'America/New_York')
+	fallbackLocale: string, // Fallback locale if primary locale isn't available
+	timezoneData: any // The raw timezone data
+): string | undefined;
+```
+
+This function returns a formatted string representation of a timezone value, including city name and UTC offset.
+
+### Component Props
 
 #### Functional Props
 
-| Prop                        | Type       | Default                 | Description                                            |
-| --------------------------- | ---------- | ----------------------- | ------------------------------------------------------ |
-| `value`                     | `string`   | `''`                    | The selected timezone value (e.g., 'America/New_York') |
-| `userLocale`                | `string`   | `'en'`                  | The locale for timezone display                        |
-| `timezoneData`              | `object`   | _required_              | The processed timezone data structure                  |
-| `selectRegionPlaceholder`   | `string`   | `'Select Region'`       | Placeholder for region selection                       |
-| `selectTimezonePlaceholder` | `string`   | `'Select timezone'`     | Placeholder for timezone selection                     |
-| `className`                 | `string`   | `''`                    | Additional CSS classes for the component               |
-| `regionLabel`               | `string`   | `'Region'`              | Label for region section                               |
-| `timezoneLabel`             | `string`   | `'Timezone'`            | Label for timezone section                             |
-| `disabled`                  | `boolean`  | `false`                 | Whether the component is disabled                      |
-| `required`                  | `boolean`  | `false`                 | Whether selection is required for form validation      |
-| `searchable`                | `boolean`  | `true`                  | Enable search functionality                            |
-| `searchPlaceholder`         | `string`   | `'Search timezones...'` | Placeholder for search input                           |
-| `backToRegionsLabel`        | `string`   | `'Back to regions'`     | Text for back button                                   |
-| `handleTimezoneChange`      | `function` | `undefined`             | Handler for timezone change events                     |
+| Prop                        | Type       | Default                 | Description                                               |
+| --------------------------- | ---------- | ----------------------- | --------------------------------------------------------- |
+| `value`                     | `string`   | `''`                    | The selected timezone value (e.g., 'America/New_York')    |
+| `userLocale`                | `string`   | `'en'`                  | The locale for timezone display                           |
+| `timezoneData`              | `object`   | _required_              | The processed timezone data from getTimezoneDataForLocale |
+| `selectRegionPlaceholder`   | `string`   | `'Select Region'`       | Placeholder for region selection                          |
+| `selectTimezonePlaceholder` | `string`   | `'Select timezone'`     | Placeholder for timezone selection                        |
+| `className`                 | `string`   | `''`                    | Additional CSS classes for the component                  |
+| `regionLabel`               | `string`   | `'Region'`              | Label for region section                                  |
+| `timezoneLabel`             | `string`   | `'Timezone'`            | Label for timezone section                                |
+| `disabled`                  | `boolean`  | `false`                 | Whether the component is disabled                         |
+| `required`                  | `boolean`  | `false`                 | Whether selection is required for form validation         |
+| `searchable`                | `boolean`  | `true`                  | Enable search functionality                               |
+| `searchPlaceholder`         | `string`   | `'Search timezones...'` | Placeholder for search input                              |
+| `backToRegionsLabel`        | `string`   | `'Back to regions'`     | Text for back button                                      |
+| `handleTimezoneChange`      | `function` | `undefined`             | Handler for timezone change events                        |
 
 #### Styling Props
 
@@ -213,7 +245,7 @@ The component emits a `change` event when the timezone selection changes:
 ```svelte
 <TimezonePicker
 	bind:value={selectedTimezone}
-	timezoneData={timezoneDataForLocale}
+	timezoneData={processedTimezoneData}
 	handleTimezoneChange={(event) => {
 		console.log(event.detail.value); // The selected timezone
 	}}
@@ -223,7 +255,14 @@ The component emits a `change` event when the timezone selection changes:
 ### Types
 
 ```typescript
-// Timezone data format
+// Type for timezone change events
+export interface TimeZoneChangeEvent {
+	detail: {
+		value: string;
+	};
+}
+
+// Raw timezone data format
 export interface TimezoneData {
 	[region: string]: {
 		[locale: string]: {
@@ -232,7 +271,7 @@ export interface TimezoneData {
 	};
 }
 
-// Example:
+// Example raw timezone data structure:
 // {
 //   "Arctic": {
 //     "en": {
@@ -254,7 +293,7 @@ export interface TimeZonePickerProps {
 	// Functional props
 	value?: string;
 	userLocale?: string;
-	timezoneData: object; // Processed timezone data from getTimezoneDataForLocale()
+	timezoneData: object; // Processed timezone data
 	selectRegionPlaceholder?: string;
 	selectTimezonePlaceholder?: string;
 	className?: string;
@@ -285,18 +324,11 @@ export interface TimeZonePickerProps {
 	timezoneUTCClass?: string;
 	noResultsClass?: string;
 }
-
-// Change event
-export interface TimeZoneChangeEvent {
-	detail: {
-		value: string;
-	};
-}
 ```
 
 ## Multilingual Support
 
-The component supports multiple languages through the timezone data structure and the `userLocale` prop. The component provides functions to work with data in 8 languages:
+The component supports multiple languages through the timezone data structure and the `userLocale` prop. The included utility functions work with data in 8 languages:
 
 - English (en)
 - Spanish (es)
@@ -328,8 +360,8 @@ Example of switching languages:
 		{ value: 'ja', label: '日本語' }
 	];
 
-	// Get timezone data for the selected language
-	let timezoneDataForLocale = $derived.by(() => {
+	// Process timezone data for the selected language
+	let processedTimezoneData = $derived.by(() => {
 		return getTimezoneDataForLocale(selectedLanguage, selectedLanguage, timezoneData);
 	});
 </script>
@@ -345,7 +377,7 @@ Example of switching languages:
 
 <TimezonePicker
 	bind:value={selectedTimezone}
-	timezoneData={timezoneDataForLocale}
+	timezoneData={processedTimezoneData}
 	userLocale={selectedLanguage}
 />
 ```
@@ -434,7 +466,7 @@ Example of custom styling:
 ```svelte
 <TimezonePicker
     bind:value={selectedTimezone}
-    timezoneData={timezoneDataForLocale}
+    timezoneData={processedTimezoneData}
     className="max-w-md"
 
     // Custom styling for specific parts
@@ -459,7 +491,7 @@ Example of custom styling:
 ```svelte
 <TimezonePicker
 	bind:value={selectedTimezone}
-	timezoneData={timezoneDataForLocale}
+	timezoneData={processedTimezoneData}
 	containerClass="dark:bg-gray-800"
 	buttonClass="dark:bg-gray-700 dark:text-white dark:border-gray-600"
 	dropdownClass="dark:bg-gray-800 dark:border-gray-700"
