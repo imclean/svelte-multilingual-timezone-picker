@@ -2,7 +2,7 @@
 
 A comprehensive, multilingual timezone picker component for Svelte 5 applications with a clean, accessible interface.
 
-![Svelte Timezone Picker.](https://github.com/imclean/svelte-multilingual-timezone-picker/blob/main/timezone-picker.png)
+![Svelte Timezone Picker.](https://github.com/imclean/svelte-timezone-picker/blob/main/timezone-picker.png)
 
 ## Features
 
