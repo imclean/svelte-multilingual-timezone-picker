@@ -100,6 +100,25 @@ npm install svelte-multilingual-timezone-picker
 {/if}
 ```
 
+## Tailwind CSS Support
+
+This component supports Tailwind CSS. Make sure to include the component's path in your Tailwind configuration:
+
+```js
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+export default {
+	content: [
+		'./src/**/*.{html,js,svelte,ts}',
+		'./node_modules/svelte-timezone-picker/**/*.{js,svelte}' // Add this line
+	],
+	theme: {
+		extend: {}
+	},
+	plugins: []
+};
+```
+
 ## With SvelteKit Form
 
 ```svelte
