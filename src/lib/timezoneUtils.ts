@@ -1,5 +1,5 @@
 import type { TimezoneData, TimezoneValue } from './types';
-import timezoneData from '../../data/timezoneData';
+
 /**
  * Converts the original timezone format to the localized structure
  *
@@ -35,7 +35,8 @@ export function convertOriginalToLocalized(
 export function getTimezoneValueForCity(
 	locale: string,
 	city: string,
-	fallbackLocale: string = 'en'
+	fallbackLocale: string = 'en',
+	timezoneData: TimezoneData
 ): TimezoneValue | null {
 	const anyRegion = Object.keys(timezoneData)[0];
 	const availableLocales = Object.keys(timezoneData[anyRegion]);
@@ -61,7 +62,8 @@ export function getTimezoneValueForCity(
  */
 export function getTimezoneDataForLocale(
 	locale: string,
-	fallbackLocale: string = 'en'
+	fallbackLocale: string = 'en',
+	timezoneData: TimezoneData
 ): TimezoneData {
 	// Make a deep copy of the structure to avoid modifying the original
 	const filteredData: TimezoneData = {};
@@ -88,7 +90,7 @@ export function getTimezoneDataForLocale(
  *
  * @returns Array of available locale codes
  */
-export function getAvailableLocales(): string[] {
+export function getAvailableLocales(timezoneData: TimezoneData): string[] {
 	// Extract available locales from the first region
 	const anyRegion = Object.keys(timezoneData)[0];
 	return Object.keys(timezoneData[anyRegion]);
@@ -101,7 +103,10 @@ export function getAvailableLocales(): string[] {
  * @param locales - Array of locale codes to include
  * @returns TimezoneData containing only the requested locales
  */
-export function getTimezoneDataForLocales(locales: string[]): TimezoneData {
+export function getTimezoneDataForLocales(
+	locales: string[],
+	timezoneData: TimezoneData
+): TimezoneData {
 	const filteredData: TimezoneData = {};
 
 	for (const region of Object.keys(timezoneData)) {

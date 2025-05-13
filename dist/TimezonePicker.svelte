@@ -1,6 +1,6 @@
 <!-- TimezonePicker.svelte -->
 <script lang="ts">
-	import type { TimeZonePickerProps, TimeZoneChangeEvent, TimezoneValue } from './types';
+	import type { TimeZonePickerProps, TimeZoneChangeEvent } from './types';
 
 	// Props for the component
 	let {

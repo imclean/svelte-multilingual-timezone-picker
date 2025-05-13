@@ -8,19 +8,18 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			$lib: './src/lib',
-			$data: './src/data'
+			$lib: './src/lib'
 		}
-	},
-
-	package: {
-		dir: 'dist',
-		emitTypes: true,
-		exports: (filepath) => {
-			return filepath === 'index.js' || filepath.endsWith('/index.js');
-		},
-		excludeDefaults: false
 	}
+
+	// package: {
+	// 	dir: 'dist',
+	// 	emitTypes: true,
+	// 	exports: (filepath) => {
+	// 		return filepath === 'index.js' || filepath.endsWith('/index.js');
+	// 	},
+	// 	excludeDefaults: false
+	// }
 };
 
 export default config;

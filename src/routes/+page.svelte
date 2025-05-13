@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { getTimezoneDataForLocale, getTimezoneValueForCity } from '$lib/components/timezoneUtils';
-	import TimezonePicker from '$lib/components/TimezonePicker.svelte';
-	import { type TimeZoneChangeEvent } from '$lib/components/types';
+	import { getTimezoneDataForLocale, getTimezoneValueForCity } from '$lib/timezoneUtils';
+	import TimezonePicker from '$lib/TimezonePicker.svelte';
+	import { type TimeZoneChangeEvent } from '$lib/types';
+	import timezoneDataFile from '../timezoneData';
 
 	// Get the user's browser language or use a specific language
 	let userLocale = $state('en');
@@ -9,7 +10,7 @@
 	// Get timezone data for the user's locale
 	let timezoneData = $derived.by(() => {
 		// This creates a dependency on locale
-		return getTimezoneDataForLocale(userLocale);
+		return getTimezoneDataForLocale(userLocale, userLocale, timezoneDataFile);
 	});
 
 	// Selected timezone
@@ -23,7 +24,7 @@
 
 	// This creates a dependency on selectedTimezone
 	let selectedTimezoneValue = $derived.by(() => {
-		return getTimezoneValueForCity(userLocale, selectedTimezone);
+		return getTimezoneValueForCity(userLocale, selectedTimezone, `en`, timezoneDataFile);
 	});
 </script>
 

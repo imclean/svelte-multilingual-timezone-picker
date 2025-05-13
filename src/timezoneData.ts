@@ -1,5 +1,5 @@
 // timezoneData.ts
-import type { TimezoneData } from '../lib/components/types';
+import type { TimezoneData } from './lib/types';
 
 const timezoneData: TimezoneData = {
 	Africa: {
