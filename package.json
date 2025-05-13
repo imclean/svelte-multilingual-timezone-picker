@@ -1,5 +1,5 @@
 {
-	"name": "svelte-timezone-picker",
+	"name": "svelte-5-timezone-picker",
 	"version": "0.1.1",
 	"description": "A multilingual timezone picker component for Svelte 5",
 	"keywords": [
