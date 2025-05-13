@@ -1,4 +1,4 @@
-# Svelte Timezone Picker
+# Svelte Multilingual Timezone Picker
 
 A comprehensive, multilingual timezone picker component for Svelte 5 applications with a clean, accessible interface.
 
@@ -21,7 +21,7 @@ A comprehensive, multilingual timezone picker component for Svelte 5 application
 ## Installation
 
 ```bash
-npm install svelte-timezone-picker
+npm install svelte-multilingual-timezone-picker
 ```
 
 ## Basic Usage
