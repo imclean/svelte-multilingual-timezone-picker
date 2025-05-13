@@ -7,35 +7,30 @@
 	let userLocale = $state('en');
 
 	// Get timezone data for the user's locale
-
-	// svelte-ignore state_referenced_locally
 	let timezoneData = $derived.by(() => {
 		// This creates a dependency on locale
-		userLocale;
-
-		// Get timezone data for the user's locale
 		return getTimezoneDataForLocale(userLocale);
 	});
 
 	// Selected timezone
 	let selectedTimezone = $state('');
 
+	// Callback function to handle timezone selections
 	function handleTimezoneChange(event: TimeZoneChangeEvent) {
 		selectedTimezone = event.detail.value;
 		console.log('Selected timezone:', selectedTimezone);
 	}
 
+	// This creates a dependency on selectedTimezone
 	let selectedTimezoneValue = $derived.by(() => {
-		// This creates a dependency on selectedTimezone
-		selectedTimezone;
 		return getTimezoneValueForCity(userLocale, selectedTimezone);
 	});
 </script>
 
-<div class="container">
+<div class="max-w-[600px] m-auto p-5">
 	<h1>Timezone Selector</h1>
 
-	<div class="language-selector">
+	<div class="mb-6">
 		<label for="language">Language:</label>
 		<select id="language" bind:value={userLocale}>
 			<option value="en">English</option>
@@ -49,35 +44,31 @@
 		</select>
 	</div>
 
-	<TimezonePicker value={selectedTimezone} {userLocale} {timezoneData} {handleTimezoneChange} />
+	<TimezonePicker
+		value={selectedTimezone}
+		{userLocale}
+		{timezoneData}
+		{handleTimezoneChange}
+		containerClass="my-custom-container"
+		buttonClass="bg-blue-100 border-blue-300"
+		buttonActiveClass="ring-blue-400"
+		dropdownClass="border border-blue-300 rounded-lg"
+		searchInputClass="bg-blue-50"
+		regionItemClass="hover:bg-blue-50"
+		regionItemActiveClass="font-bold"
+		timezoneItemClass="py-3"
+		timezoneNameClass="font-medium"
+		timezoneUTCClass="text-blue-600"
+	/>
 
 	{#if selectedTimezone}
-		<div class="selection-info">
+		<div class="mt-6 p-4 bg-gray-200 rounded-lg">
 			<p>Selected timezone: {selectedTimezone}</p>
 		</div>
 	{/if}
 	{#if selectedTimezoneValue}
-		<div class="selection-info">
+		<div class="mt-6 p-4 bg-gray-200 rounded-lg">
 			<p>Timezone value: {selectedTimezoneValue}</p>
 		</div>
 	{/if}
 </div>
-
-<style>
-	.container {
-		max-width: 600px;
-		margin: 0 auto;
-		padding: 20px;
-	}
-
-	.language-selector {
-		margin-bottom: 20px;
-	}
-
-	.selection-info {
-		margin-top: 20px;
-		padding: 10px;
-		background-color: #f0f0f0;
-		border-radius: 4px;
-	}
-</style>

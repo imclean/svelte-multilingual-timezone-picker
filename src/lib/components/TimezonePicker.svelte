@@ -12,12 +12,31 @@
 		className = '',
 		regionLabel = 'Region',
 		timezoneLabel = 'Timezone',
+		noTimezonesLabel = 'No timezones found',
 		disabled = false,
 		required = false,
 		searchable = true,
 		searchPlaceholder = 'Search timezones...',
 		backToRegionsLabel = 'Back to regions',
-		handleTimezoneChange
+		handleTimezoneChange,
+
+		// CSS class props for each component part
+		containerClass = '', // The main container
+		buttonClass = '', // The dropdown trigger button
+		buttonActiveClass = '', // Additional classes when button is active/dropdown is open
+		buttonDisabledClass = '', // Button when disabled
+		dropdownClass = '', // The dropdown container
+		searchContainerClass = '', // Container around the search input
+		searchInputClass = '', // The search input itself
+		regionHeaderClass = '', // Region section header
+		regionItemClass = '', // Individual region item
+		regionItemActiveClass = '', // Active/selected region item
+		backButtonClass = '', // Back to regions button
+		timezoneItemClass = '', // Individual timezone item
+		timezoneItemActiveClass = '', // Active/selected timezone item
+		timezoneNameClass = '', // Timezone name
+		timezoneUTCClass = '', // UTC offset display
+		noResultsClass = '' // No results message
 	}: TimeZonePickerProps = $props();
 
 	// Internal state
@@ -211,15 +230,18 @@
 	});
 </script>
 
-<!-- Rest of your component HTML remains the same -->
-<div id="timezone-dropdown" class="relative {className}">
+<!-- Main container -->
+<div id="timezone-dropdown" class="relative {className} {containerClass}">
 	<!-- Dropdown trigger button -->
 	<button
 		type="button"
 		onclick={() => (isOpen = !isOpen)}
 		{disabled}
-		class="w-full flex items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 {disabled
-			? 'opacity-50 cursor-not-allowed'
+		class="w-full flex items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500
+            {buttonClass}
+            {isOpen ? buttonActiveClass : ''}
+            {disabled
+			? `opacity-50 cursor-not-allowed ${buttonDisabledClass}`
 			: 'hover:bg-gray-50'}"
 		aria-haspopup="listbox"
 		aria-expanded={isOpen}
@@ -242,17 +264,19 @@
 
 	<!-- Dropdown menu -->
 	{#if isOpen}
-		<div class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg max-h-96 overflow-hidden">
+		<div
+			class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg max-h-96 overflow-hidden {dropdownClass}"
+		>
 			<div class="flex flex-col">
 				<!-- Search input -->
 				{#if searchable}
-					<div class="p-2 border-b">
+					<div class="p-2 border-b {searchContainerClass}">
 						<input
 							bind:this={searchInput}
 							bind:value={searchQuery}
 							type="text"
 							placeholder={searchPlaceholder}
-							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 {searchInputClass}"
 						/>
 					</div>
 				{/if}
@@ -261,13 +285,16 @@
 					{#if !filteredTimezones && !searchQuery}
 						<!-- Show region selection -->
 						<div class="py-1">
-							<div class="px-3 py-2 text-xs font-semibold text-gray-500">{regionLabel}</div>
+							<div class="px-3 py-2 text-xs font-semibold text-gray-500 {regionHeaderClass}">
+								{regionLabel}
+							</div>
 							{#each regions as region}
 								<button
 									type="button"
-									class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer {selectedRegion ===
-									region
-										? 'bg-blue-50 text-blue-700'
+									class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer
+                                        {regionItemClass}
+                                        {selectedRegion === region
+										? `bg-blue-50 text-blue-700 ${regionItemActiveClass}`
 										: 'text-gray-700'}"
 									onclick={() => selectRegion(region)}
 								>
@@ -282,7 +309,7 @@
 							<div class="py-2 px-3 border-b">
 								<button
 									type="button"
-									class="flex items-center text-sm text-blue-600 hover:text-blue-800"
+									class="flex items-center text-sm text-blue-600 hover:text-blue-800 {backButtonClass}"
 									onclick={backToRegions}
 								>
 									<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,19 +328,22 @@
 						<!-- Render regions and their timezones -->
 						{#each Object.entries(filteredTimezones) as [region, timezones]}
 							<div class="py-1">
-								<div class="px-3 py-2 text-xs font-semibold text-gray-500">{region}</div>
+								<div class="px-3 py-2 text-xs font-semibold text-gray-500 {regionHeaderClass}">
+									{region}
+								</div>
 								{#each Object.entries(timezones) as [timezone, data]}
 									<button
 										type="button"
-										class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer {value ===
-										timezone
-											? 'bg-blue-50 text-blue-700'
+										class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer
+                                            {timezoneItemClass}
+                                            {value === timezone
+											? `bg-blue-50 text-blue-700 ${timezoneItemActiveClass}`
 											: 'text-gray-700'}"
 										onclick={() => selectTimezone(timezone)}
 									>
 										<div class="flex justify-between">
-											<span>{data[0]}</span>
-											<span class="text-gray-500">UTC{data[1]}</span>
+											<span class={timezoneNameClass}>{data[0]}</span>
+											<span class="text-gray-500 {timezoneUTCClass}">UTC{data[1]}</span>
 										</div>
 									</button>
 								{/each}
@@ -322,7 +352,7 @@
 					{:else}
 						<!-- No results found -->
 						<div class="py-1">
-							<div class="px-3 py-2 text-sm text-gray-500">No timezones found</div>
+							<div class="px-3 py-2 text-sm text-gray-500 {noResultsClass}">{noTimezonesLabel}</div>
 						</div>
 					{/if}
 				</div>

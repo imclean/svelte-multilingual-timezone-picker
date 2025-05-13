@@ -19,12 +19,29 @@ export interface TimeZonePickerProps {
 	className?: string;
 	regionLabel?: string;
 	timezoneLabel?: string;
+	noTimezonesLabel?: string;
 	disabled?: boolean;
 	required?: boolean;
 	searchable?: boolean;
 	searchPlaceholder?: string;
 	backToRegionsLabel?: string;
 	handleTimezoneChange?: (event: TimeZoneChangeEvent) => void;
+	containerClass?: string;
+	buttonClass?: string;
+	buttonActiveClass?: string;
+	buttonDisabledClass?: string;
+	dropdownClass?: string;
+	searchContainerClass?: string;
+	searchInputClass?: string;
+	regionHeaderClass?: string;
+	regionItemClass?: string;
+	regionItemActiveClass?: string;
+	backButtonClass?: string;
+	timezoneItemClass?: string;
+	timezoneItemActiveClass?: string;
+	timezoneNameClass?: string;
+	timezoneUTCClass?: string;
+	noResultsClass?: string;
 }
 
 export interface TimeZoneChangeEvent {
