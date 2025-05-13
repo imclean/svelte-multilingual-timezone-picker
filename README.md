@@ -24,8 +24,6 @@ A comprehensive, multilingual timezone picker component for Svelte 5 application
 npm install svelte-timezone-picker
 ```
 
-````
-
 ## Basic Usage
 
 ```svelte
@@ -543,4 +541,6 @@ This package is released under the MIT License.
 
 Developed with ❤️ by Iain McLean.
 
-````
+```
+
+```
