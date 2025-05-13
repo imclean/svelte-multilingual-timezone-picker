@@ -540,7 +540,3 @@ This package is released under the MIT License.
 ---
 
 Developed with ❤️ by Iain McLean.
-
-```
-
-```
