@@ -30,6 +30,7 @@ npm install svelte-multilingual-timezone-picker
 <script>
 	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
+	import { regionData } from '../regionData';
 
 	// Get the user's language or set a default
 	let userLocale = $state('en');
@@ -42,7 +43,12 @@ npm install svelte-multilingual-timezone-picker
 	let selectedTimezone = $state('');
 </script>
 
-<TimezonePicker bind:value={selectedTimezone} timezoneData={processedTimezoneData} {userLocale} />
+<TimezonePicker
+	bind:value={selectedTimezone}
+	timezoneData={processedTimezoneData}
+	{userLocale}
+	{regionData}
+/>
 
 <p>Selected timezone: {selectedTimezone}</p>
 ```
@@ -58,6 +64,7 @@ npm install svelte-multilingual-timezone-picker
 	} from 'svelte-multilingual-timezone-picker';
 	import { type TimeZoneChangeEvent } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
+	import { regionData } from '../regionData';
 
 	let userLocale = $state('es');
 	let selectedTimezone = $state('America/New_York');
@@ -80,6 +87,7 @@ npm install svelte-multilingual-timezone-picker
 <TimezonePicker
 	bind:value={selectedTimezone}
 	timezoneData={processedTimezoneData}
+	{regionData}
 	{userLocale}
 	className="max-w-md"
 	selectRegionPlaceholder="Seleccionar región"
@@ -125,6 +133,7 @@ export default {
 <script>
 	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
+	import { regionData } from '../regionData';
 
 	let formData = $state({
 		name: '',
@@ -168,6 +177,7 @@ export default {
 			<TimezonePicker
 				bind:value={formData.timezone}
 				timezoneData={processedTimezoneData}
+				{regionData}
 				{userLocale}
 				required={true}
 			/>
@@ -222,6 +232,7 @@ This function returns a formatted string representation of a timezone value, inc
 | `value`                     | `string`   | `''`                    | The selected timezone value (e.g., 'America/New_York')    |
 | `userLocale`                | `string`   | `'en'`                  | The locale for timezone display                           |
 | `timezoneData`              | `object`   | _required_              | The processed timezone data from getTimezoneDataForLocale |
+| `regionData`                | `object`   | _required_              | The processed regional data from localised translations   |
 | `selectRegionPlaceholder`   | `string`   | `'Select Region'`       | Placeholder for region selection                          |
 | `selectTimezonePlaceholder` | `string`   | `'Select timezone'`     | Placeholder for timezone selection                        |
 | `className`                 | `string`   | `''`                    | Additional CSS classes for the component                  |
@@ -263,6 +274,7 @@ The component emits a `change` event when the timezone selection changes:
 <TimezonePicker
 	bind:value={selectedTimezone}
 	timezoneData={processedTimezoneData}
+	{regionData}
 	handleTimezoneChange={(event) => {
 		console.log(event.detail.value); // The selected timezone
 	}}
@@ -278,6 +290,33 @@ export interface TimeZoneChangeEvent {
 		value: string;
 	};
 }
+
+// Regional Translation Data Format:
+export type RegionTranslations = Record<string, Record<string, string>>;
+
+// Example raw regional data structure:
+// export const regionData: Record<string, Record<string, string>> = {
+// 	en: {
+// 		Standard: 'Standard',
+// 		Africa: 'Africa',
+// 		America: 'America',
+// 	},
+// 	de: {
+// 		Standard: 'Standard',
+// 		Africa: 'Afrika',
+// 		America: 'Amerika',
+// 	},
+// 	es: {
+// 		Standard: 'Estándar',
+// 		Africa: 'África',
+// 		America: 'América',
+// 	},
+// 	zh: {
+// 		Standard: '标准',
+// 		Africa: '非洲',
+// 		America: '美洲',
+// 	}
+// };
 
 // Raw timezone data format
 export interface TimezoneData {
@@ -310,7 +349,8 @@ export interface TimeZonePickerProps {
 	// Functional props
 	value?: string;
 	userLocale?: string;
-	timezoneData: object; // Processed timezone data
+	timezoneData: object;
+	regionalData: object;
 	selectRegionPlaceholder?: string;
 	selectTimezonePlaceholder?: string;
 	className?: string;
@@ -362,6 +402,7 @@ Example of switching languages:
 <script>
 	import { TimezonePicker, getTimezoneDataForLocale } from 'svelte-multilingual-timezone-picker';
 	import timezoneData from './timezoneData';
+	import { regionData } from './regionData';
 
 	let selectedTimezone = $state('');
 	let selectedLanguage = $state('en');
@@ -396,6 +437,7 @@ Example of switching languages:
 	bind:value={selectedTimezone}
 	timezoneData={processedTimezoneData}
 	userLocale={selectedLanguage}
+	{regionData}
 />
 ```
 
@@ -404,7 +446,7 @@ Example of switching languages:
 Your timezone data should follow this structure:
 
 ```javascript
-// timezoneData.js
+// timezoneData.ts
 export default {
 	Arctic: {
 		en: {
@@ -470,6 +512,40 @@ customTimezoneData.Asia.ru = {
 };
 ```
 
+## Regions Data Structure
+
+Your region data should follow this structure:
+
+```javascript
+// regionData.ts
+export const regionData: Record<string, Record<string, string>> = {
+	en: {
+		Standard: 'Standard',
+		Africa: 'Africa',
+		America: 'America'
+	},
+	de: {
+		Standard: 'Standard',
+		Africa: 'Afrika',
+		America: 'Amerika'
+	},
+	es: {
+		Standard: 'Estándar',
+		Africa: 'África',
+		America: 'América'
+	},
+	//more translations
+};
+
+```
+
+Where each region entry follows the format:
+
+- Key: The language of the user locale
+- Value: An object containing:
+  - The region name key in english
+  - The region name value in the language of the key
+
 ## Styling Customization
 
 The component uses Tailwind CSS classes. You can customize the appearance through:
@@ -484,6 +560,7 @@ Example of custom styling:
 <TimezonePicker
     bind:value={selectedTimezone}
     timezoneData={processedTimezoneData}
+	{regionData}
     className="max-w-md"
 
     // Custom styling for specific parts
@@ -509,6 +586,7 @@ Example of custom styling:
 <TimezonePicker
 	bind:value={selectedTimezone}
 	timezoneData={processedTimezoneData}
+	{regionData}
 	containerClass="dark:bg-gray-800"
 	buttonClass="dark:bg-gray-700 dark:text-white dark:border-gray-600"
 	dropdownClass="dark:bg-gray-800 dark:border-gray-700"

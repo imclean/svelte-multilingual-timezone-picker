@@ -3,6 +3,7 @@
 	import TimezonePicker from '$lib/TimezonePicker.svelte';
 	import { type TimeZoneChangeEvent } from '$lib/types';
 	import timezoneDataFile from '../timezoneData';
+	import { regionData } from '../regionData';
 
 	// Get the user's browser language or use a specific language
 	let userLocale = $state('en');
@@ -49,6 +50,7 @@
 		value={selectedTimezone}
 		{userLocale}
 		{timezoneData}
+		{regionData}
 		{handleTimezoneChange}
 		containerClass="my-custom-container"
 		buttonClass="bg-blue-100 border-blue-300"

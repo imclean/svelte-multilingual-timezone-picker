@@ -1,5 +1,5 @@
 export type TimezoneValue = [string, string, string]; // [cityName, standardTime, daylightTime]
-
+export type RegionTranslations = Record<string, Record<string, string>>;
 export interface TimezoneLanguages {
 	[locale: string]: {
 		[timezone: string]: TimezoneValue;
@@ -14,6 +14,7 @@ export interface TimeZonePickerProps {
 	value?: string;
 	userLocale?: string;
 	timezoneData: TimezoneData;
+	regionData: RegionTranslations;
 	selectRegionPlaceholder?: string;
 	selectTimezonePlaceholder?: string;
 	className?: string;

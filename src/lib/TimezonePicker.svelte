@@ -7,6 +7,7 @@
 		value = $bindable(''),
 		userLocale = $bindable('en'),
 		timezoneData = $bindable(),
+		regionData = $bindable(),
 		selectRegionPlaceholder = 'Select Region',
 		selectTimezonePlaceholder = 'Select timezone',
 		className = '',
@@ -78,6 +79,13 @@
 			selectedRegion = '';
 		}
 	});
+
+	// Get translated region name function
+	function getRegionDisplay(region: string): string {
+		const locale = userLocale || 'en';
+		const translations = regionData[locale] || regionData['en'];
+		return translations[region] || region;
+	}
 
 	// Filter timezones based on search query or selected region
 	let filteredTimezones = $derived.by(() => {
@@ -298,7 +306,7 @@
 										: 'text-gray-700'}"
 									onclick={() => selectRegion(region)}
 								>
-									{region}
+									{getRegionDisplay(region)}
 								</button>
 							{/each}
 						</div>
@@ -329,7 +337,7 @@
 						{#each Object.entries(filteredTimezones) as [region, timezones]}
 							<div class="py-1">
 								<div class="px-3 py-2 text-xs font-semibold text-gray-500 {regionHeaderClass}">
-									{region}
+									{getRegionDisplay(region)}
 								</div>
 								{#each Object.entries(timezones) as [timezone, data]}
 									<button
