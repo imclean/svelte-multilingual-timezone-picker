@@ -1,6 +1,6 @@
 {
 	"name": "svelte-multilingual-timezone-picker",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "A multilingual timezone picker component for Svelte 5",
 	"keywords": [
 		"svelte",
@@ -16,7 +16,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/imclean/svelte-timezone-picker"
+		"url": "https://github.com/imclean/svelte-multilingual-timezone-picker"
 	},
 	"type": "module",
 	"exports": {
